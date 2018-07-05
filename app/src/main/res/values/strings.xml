@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Test_NP</string>
+    <string name="encrypted_text_title">Encrypted text:</string>
+    <string name="decrypted_text_title">Decrypted text:</string>
+    <string name="security_warning">Security warning</string>
+    <string name="security_warning_message">Seems that your device doesn\'t have any password set up.</string>
+    <string name="security_warning_positive_button">Set up now!</string>
+    <string name="confirmation_title">Confirm credentials.</string>
+</resources>
