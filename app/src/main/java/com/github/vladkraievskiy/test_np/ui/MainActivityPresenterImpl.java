@@ -5,7 +5,6 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import com.github.vladkraievskiy.test_np.data.repository.Repository;
 import com.github.vladkraievskiy.test_np.encryption.EncryptedData;
@@ -22,6 +21,8 @@ public final class MainActivityPresenterImpl implements MainActivityPresenter {
 
     private final WeakReference<MainActivityView> viewWeakReference;
 
+    private boolean isUserAuthorized = false;
+
     public MainActivityPresenterImpl(
             @NonNull final MainActivityView view,
             @NonNull final Encryption encryption,
@@ -34,7 +35,7 @@ public final class MainActivityPresenterImpl implements MainActivityPresenter {
         mainThreadHandler = new Handler(Looper.getMainLooper());
     }
 
-    public void tryToGenerateKeys(@NonNull final Context context, @Nullable final Runnable onSuccessTask) {
+    public void tryToGenerateKeys(@NonNull final Context context) {
         if (!keyguardManager.isKeyguardSecure()) {
             runTaskOnUi(new Runnable() {
                 @Override
@@ -52,8 +53,8 @@ public final class MainActivityPresenterImpl implements MainActivityPresenter {
 
         encryption.tryGenerateKeys(context);
 
-        if (onSuccessTask != null) {
-            onSuccessTask.run();
+        if (!isUserAuthorized) {
+            viewWeakReference.get().startUserAuthorization();
         }
     }
 
@@ -99,6 +100,11 @@ public final class MainActivityPresenterImpl implements MainActivityPresenter {
                 task.run();
             }
         });
+    }
+
+    @Override
+    public void onUserAuthorized() {
+        isUserAuthorized = true;
     }
 
     private boolean isViewDetached() {

@@ -31,20 +31,13 @@ public final class MainActivity extends AppCompatActivity implements MainActivit
 
         createPresenter();
         findViews();
+    }
 
-        presenter.tryToGenerateKeys(this, new Runnable() {
-            @Override
-            public void run() {
-                KeyguardManager keyguardManager = (KeyguardManager) getSystemService(KEYGUARD_SERVICE);
+    @Override
+    protected void onStart() {
+        super.onStart();
 
-                if (keyguardManager == null) {
-                    return;
-                }
-
-                Intent confirmDeviceCredentialIntent = keyguardManager.createConfirmDeviceCredentialIntent(getString(R.string.confirmation_title), "");
-                startActivityForResult(confirmDeviceCredentialIntent, CONFIRM_CREDENTIALS_REQUEST);
-            }
-        });
+        presenter.tryToGenerateKeys(this);
     }
 
     private void createPresenter() {
@@ -62,6 +55,18 @@ public final class MainActivity extends AppCompatActivity implements MainActivit
     }
 
     @Override
+    public void startUserAuthorization() {
+        KeyguardManager keyguardManager = (KeyguardManager) getSystemService(KEYGUARD_SERVICE);
+
+        if (keyguardManager == null) {
+            return;
+        }
+
+        Intent confirmDeviceCredentialIntent = keyguardManager.createConfirmDeviceCredentialIntent(getString(R.string.confirmation_title), "");
+        startActivityForResult(confirmDeviceCredentialIntent, CONFIRM_CREDENTIALS_REQUEST);
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
@@ -73,6 +78,7 @@ public final class MainActivity extends AppCompatActivity implements MainActivit
             return;
         }
 
+        presenter.onUserAuthorized();
         presenter.loadRepositories();
     }
 

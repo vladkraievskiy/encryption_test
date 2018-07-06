@@ -8,6 +8,8 @@ public interface MainActivityView {
 
     void hideProgress();
 
+    void startUserAuthorization();
+
     void setCipherText(@NonNull final String cipherText);
 
     void setText(@NonNull final String text);
